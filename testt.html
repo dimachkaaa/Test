@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровое меню</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-menu {
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(0, 150, 255, 0.3);
+            border: 2px solid rgba(0, 150, 255, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-menu::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 150, 255, 0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .game-title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(45deg, #00b4d8, #90e0ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .menu-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            color: white;
+            padding: 18px 30px;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-button:hover {
+            background: rgba(0, 150, 255, 0.2);
+            border-color: #00b4d8;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 180, 216, 0.4);
+        }
+
+        .menu-button:active {
+            transform: translateY(0);
+        }
+
+        .menu-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .menu-button:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .slider {
+            width: 60%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00b4d8;
+            cursor: pointer;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .version {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        /* Анимация для фона */
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .bg-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 180, 216, 0.7);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            z-index: -2;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-menu">
+        <h1 class="game-title">Космическая битва</h1>
+        
+        <div class="menu-items">
+            <button class="menu-button" id="startBtn">Новая игра</button>
+            <button class="menu-button" id="continueBtn">Продолжить</button>
+            <button class="menu-button" id="settingsBtn">Настройки</button>
+            <button class="menu-button" id="aboutBtn">Об игре</button>
+            <button class="menu-button" id="exitBtn">Выход</button>
+        </div>
+
+        <div class="settings-panel" id="settingsPanel">
+            <div class="setting-item">
+                <span>Громкость музыки:</span>
+                <input type="range" min="0" max="100" value="50" class="slider" id="musicVolume">
+            </div>
+            <div class="setting-item">
+                <span>Громкость эффектов:</span>
+                <input type="range" min="0" max="100" value="70" class="slider" id="sfxVolume">
+            </div>
+            <div class="setting-item">
+                <span>Полный экран:</span>
+                <input type="checkbox" class="checkbox" id="fullscreen">
+            </div>
+            <div class="setting-item">
+                <span>Сложность:</span>
+                <select id="difficulty" style="background: rgba(0,0,0,0.5); color: white; padding: 5px; border-radius: 5px;">
+                    <option value="easy">Легкая</option>
+                    <option value="normal" selected>Нормальная</option>
+                    <option value="hard">Сложная</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="version">Версия 1.0.0</div>
+    </div>
+
+    <script>
+        // Создаем частицы для фона
+        function createParticles() {
+            const particlesCount = 50;
+            for (let i = 0; i < particlesCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bg-particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.opacity = Math.random();
+                document.body.appendChild(particle);
+            }
+        }
+
+        // Обработчики кнопок меню
+        document.getElementById('startBtn').addEventListener('click', function() {
+            alert('Начинаем новую игру!');
+            // Здесь можно добавить переход к игре
+            // window.location.href = 'game.html';
+        });
+
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            alert('Продолжаем игру...');
+            // Проверка сохраненной игры и загрузка
+        });
+
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.getElementById('aboutBtn').addEventListener('click', function() {
+            alert('Космическая битва v1.0\nРазработано студией StarGames\n© 2024 Все права защищены');
+        });
+
+        document.getElementById('exitBtn').addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                alert('До встречи!');
+                // window.close(); // Для десктопных приложений
+                // Для веба можно сделать редирект
+                // window.location.href = 'https://google.com';
+            }
+        });
+
+        // Обработчики настроек
+        document.getElementById('musicVolume').addEventListener('input', function(e) {
+            console.log('Громкость музыки:', e.target.value + '%');
+        });
+
+        document.getElementById('sfxVolume').addEventListener('input', function(e) {
+            console.log('Громкость эффектов:', e.target.value + '%');
+        });
+
+        document.getElementById('fullscreen').addEventListener('change', function(e) {
+            if (e.target.checked) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        document.getElementById('difficulty').addEventListener('change', function(e) {
+            console.log('Сложность изменена на:', e.target.value);
+        });
+
+        // Создаем частицы при загрузке
+        window.addEventListener('load', createParticles);
+
+        // Добавляем эффект при наведении на кнопки
+        document.querySelectorAll('.menu-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(0, 180, 216, 0.3)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.1)';
+            });
+        });
+
+        // Добавляем звук при клике (пример)
+        document.querySelectorAll('.menu-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Создаем звуковой контекст
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            });
+        });
+    </script>
+</body>
+</html>
